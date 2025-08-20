@@ -1,5 +1,5 @@
 # Stage 1: Build JAR inside Docker
-FROM maven:3.9.6-eclipse-temurin-17 AS builder
+FROM public.ecr.aws/sam/build-java17:latest AS builder
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
