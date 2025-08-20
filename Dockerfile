@@ -1,11 +1,12 @@
+# Stage 1: Build JAR inside Docker
+FROM maven:3.9.6-eclipse-temurin-17 AS builder
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# instead of pulling from docker hub
-# FROM openjdk:17-oracle
-
-# use the same image from Amazon ECR Public (no rate limits in AWS)
+# Stage 2: Runtime image
 FROM public.ecr.aws/docker/library/openjdk:17-oracle
-
-VOLUME /tmp
-COPY target/*.jar  app.jar
-ENTRYPOINT ["java","-jar", "app.jar"]
-
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
+ENTRYPOINT ["java","-jar","app.jar"]
